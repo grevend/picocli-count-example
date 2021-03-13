@@ -1,0 +1,21 @@
+name: Check MoSCoW Prioritization
+on: 
+  pull_request:
+    types: [labeled]
+jobs:
+  prioritized:
+    if: github.event.label.name == 'could have' || github.event.label.name == 'should have' || github.event.label.name == 'must have' || github.event.label.name == 'wont have'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get pull request id
+      run: echo "PULL_NUMBER=$(echo \"$GITHUB_REF\" | awk -F / '{print $3}')" >> $GITHUB_ENV
+      shell: bash
+    - name: Create pull request comment using REST API
+      run: |
+        curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PULL_NUMBER }}/comments \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "body": ":heavy_check_mark: Excellent! Now that the MoSCoW prioritization is finished, don&apos;t forget to update the checklist."
+          }'
