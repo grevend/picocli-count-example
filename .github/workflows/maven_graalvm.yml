@@ -1,0 +1,68 @@
+name: Maven CI with GraalVM
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Move to $HOME
+        run: cd $HOME
+        
+      - name: Cache GraalVM Installation
+        id: cache-graalvm
+        uses: actions/cache@v2
+        with:
+          path: graalvm
+          key: ${{ runner.os }}-graalvm-21.0.0.2
+
+      - name: Install GraalVM
+        if: steps.cache-graalvm.outputs.cache-hit != 'true'
+        run: |
+          curl -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0.2/graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz -o graalvm.tar.gz
+          mkdir graalvm
+          tar -xf graalvm.tar.gz -C ./graalvm --strip-components=1
+          chmod -R a+rwx ./graalvm
+          
+      - name: Set GraalVM PATH & ENV
+        run: |
+          echo "$PWD/graalvm/bin" >> $GITHUB_PATH
+          echo "GRAALVM_HOME=$PWD/graalvm" >> $GITHUB_ENV
+          echo "JAVA_HOME=$PWD/graalvm" >> $GITHUB_ENV
+        
+      - name: Cache Maven Installation
+        id: cache-maven
+        uses: actions/cache@v2
+        with:
+          path: maven
+          key: ${{ runner.os }}-maven-3.6.3
+          
+      - name: Install Maven
+        if: steps.cache-maven.outputs.cache-hit != 'true'
+        run: |
+          curl -sL https://mirror.lyrahosting.com/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz -o maven.tar.gz
+          mkdir maven
+          tar -xf maven.tar.gz -C ./maven --strip-components=1
+          chmod -R a+rwx ./maven
+          
+      - name: Set Maven PATH
+        run: echo "$PWD/maven/bin" >> $GITHUB_PATH
+        
+      - name: Cache Maven Packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
