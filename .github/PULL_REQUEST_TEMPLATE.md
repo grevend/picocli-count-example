@@ -9,10 +9,6 @@
 - [ ] Assign Sprint
 - [ ] Assign Moscow Prioritization
 
-## SRS
-
-- [ ] Update
-
 ### Testing
 
 - [ ] Functionality
