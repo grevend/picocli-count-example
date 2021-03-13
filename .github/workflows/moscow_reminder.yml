@@ -1,0 +1,23 @@
+name: Check MoSCoW Prioritization
+on: 
+  pull_request:
+    types: [opened, unlabeled]
+jobs:
+  reminder:
+    if: contains(github.event.pull_request.labels.*.name, 'could have') != true && contains(github.event.pull_request.labels.*.name, 'should have') != true && contains(github.event.pull_request.labels.*.name, 'must have') != true && contains(github.event.pull_request.labels.*.name, 'wont have') != true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get pull request id
+      run: echo "PULL_NUMBER=$(echo \"$GITHUB_REF\" | awk -F / '{print $3}')" >> $GITHUB_ENV
+      shell: bash
+    - name: Check out repository
+      uses: actions/checkout@v2  
+    - name: Create pull request comment using REST API
+      run: |
+        markdown=$(cat .github/workflows/templates/moscow.md)
+        temp=$(echo "{\"body\": \"${markdown}\"}" | awk 1 ORS='\\n')
+        curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PULL_NUMBER }}/comments \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data "${temp::-2}"
