@@ -6,12 +6,24 @@ import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.Command;
 
-@Command(name = "count", version = "count 1.0", description = "Count the human readable characters, lines or words from stdin or a file and write the number to stdout or a file.")
+/**
+ * The count command entry class.
+ *
+ * @since sprint 1
+ */
+@Command(name = "count", version = "count 1.0",
+    description = "Count the human readable characters, lines or words from stdin or a file and write the number to stdout or a file.")
 public class Count implements Callable<Integer> {
 
+    /**
+     * Main program entry point. Creates a command line instance and delegates the given program args to the count command.
+     *
+     * @param args the supplied program args
+     *
+     * @since sprint 1
+     */
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new Count()).execute("");
-        System.exit(exitCode);
+        System.exit(new CommandLine(new Count()).execute(args));
     }
 
     @Override
