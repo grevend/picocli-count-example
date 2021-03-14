@@ -12,7 +12,7 @@ import static picocli.CommandLine.Command;
  * @since sprint 1
  */
 @Command(name = "count", version = "count 1.0",
-    description = "Count the human readable characters, lines or words from stdin or a file and write the number to stdout or a file.")
+    description = "Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.")
 public class Count implements Callable<Integer> {
 
     /**
