@@ -16,7 +16,6 @@ public class CountTest {
             " words from stdin or a file and" + System.lineSeparator() + "write the number to stdout or a file.");
     }
 
-    @ParameterizedTest
     @CsvSource({
         ",0", "\n,0", " ,0", "\t,0",
         "a,1", "ab,2", "a b,2", "ab c,3", "a-b,3", "a_b,3",
@@ -28,6 +27,7 @@ public class CountTest {
         "امتحان,6",
         "汉字,2", "漢字,2", "Hán tự,5", "漢字,2", "\uD876\uDE21倱,3", "한자,2", "漢字,2", "漢字,2", "かんじ,3",
     })
+    @ParameterizedTest
     public void testHumanReadableCount(String input, String count) {
         var commandLine = new TestCommandLine(new String[]{}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
