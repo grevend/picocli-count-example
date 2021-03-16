@@ -4,8 +4,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.Command;
@@ -33,8 +32,21 @@ public class Count implements Callable<Integer> {
         System.exit(new CommandLine(new Count()).execute(args));
     }
 
+    /**
+     * Reads text from the selected input stream, computes the character count, and prints the value into the specified output stream.
+     *
+     * @return the command exit code
+     *
+     * @throws IOException if the input or output stream cannot be closed
+     * @since sprint 1
+     */
     @Override
-    public Integer call() {
+    public Integer call() throws IOException {
+        try (var reader = new BufferedReader(new InputStreamReader(in())); var out = out()) {
+            for (String line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
+                out.println(line);
+            }
+        }
         return 0;
     }
 
