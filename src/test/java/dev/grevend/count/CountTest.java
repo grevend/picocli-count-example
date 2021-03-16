@@ -2,9 +2,14 @@ package dev.grevend.count;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.of;
 
 public class CountTest {
 
@@ -30,6 +35,24 @@ public class CountTest {
     @ParameterizedTest
     public void testHumanReadableCount(String input, String count) {
         var commandLine = new TestCommandLine(new String[]{}, new String[]{input});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString()).startsWith(count);
+    }
+
+    private static Stream<Arguments> testLines() {
+        return Stream.of(
+            of(new String[]{}, "0"),
+            of(new String[]{""}, "0"),
+            of(new String[]{" "}, "0"),
+            of(new String[]{"first"}, "1"),
+            of(new String[]{"first", "second"}, "2")
+        );
+    }
+
+    @MethodSource(value = "testLines")
+    @ParameterizedTest
+    public void testLineCount(String[] input, String count) {
+        var commandLine = new TestCommandLine(new String[]{"-m", "lines"}, input);
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString()).startsWith(count);
     }

@@ -14,11 +14,12 @@ public enum CountingMethods implements Function<String, IntStream> {
          *
          * @param line the current text chunk
          * @return an int stream of counts
+         *
          * @since sprint 1
          */
         @Override
         public IntStream apply(String line) {
-            return humanReadable.matcher(line.strip()).results().map(MatchResult::group).mapToInt(String::length);
+            return humanReadable.matcher(line).results().map(MatchResult::group).mapToInt(String::length);
         }
 
     }, words() {
@@ -30,9 +31,16 @@ public enum CountingMethods implements Function<String, IntStream> {
 
     }, lines() {
 
+        /**
+         * Computes the line count by checking if the text is blank.
+         * @param line the current text chunk
+         * @return an int stream that contains zero if the chunk is blank or else 1
+         *
+         * @since sprint 1
+         */
         @Override
         public IntStream apply(String line) {
-            return IntStream.empty();
+            return IntStream.of(line.isBlank() ? 0 : 1);
         }
 
     };
