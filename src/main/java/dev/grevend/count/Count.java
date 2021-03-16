@@ -4,7 +4,10 @@ import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.Command;
@@ -42,8 +45,8 @@ public class Count implements Callable<Integer> {
      */
     @Override
     public Integer call() throws IOException {
-        try (var reader = new BufferedReader(new InputStreamReader(in())); var out = out()) {
-            for (String line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
+        try (var reader = in(); var out = out()) {
+            for (String line = reader.readLine(); line != null && !line.isBlank(); line = reader.readLine()) {
                 out.println(line);
             }
         }
@@ -57,8 +60,8 @@ public class Count implements Callable<Integer> {
      *
      * @since sprint 1
      */
-    private InputStream in() {
-        return System.in;
+    protected BufferedReader in() {
+        return new BufferedReader(new InputStreamReader(System.in));
     }
 
     /**
