@@ -1,8 +1,11 @@
 package dev.grevend.count;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Model.CommandSpec;
+import picocli.CommandLine.Spec;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.Command;
@@ -15,6 +18,9 @@ import static picocli.CommandLine.Command;
 @Command(name = "count", version = "count 1.0", mixinStandardHelpOptions = true,
     description = "Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.")
 public class Count implements Callable<Integer> {
+
+    @Spec
+    private CommandSpec spec;
 
     /**
      * Main program entry point. Creates a command line instance and delegates the given program args to the count command.
@@ -41,6 +47,17 @@ public class Count implements Callable<Integer> {
      */
     private InputStream in() {
         return System.in;
+    }
+
+    /**
+     * Returns or constructs an output stream based on the selected command options.
+     *
+     * @return the output stream
+     *
+     * @since sprint 1
+     */
+    private PrintWriter out() {
+        return spec.commandLine().getOut();
     }
 
 }
