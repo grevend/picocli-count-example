@@ -1,12 +1,11 @@
 package dev.grevend.count;
 
-import org.assertj.core.util.Arrays;
 import picocli.CommandLine;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
@@ -48,10 +47,7 @@ public final class TestCommandLine {
         var reader = mock(BufferedReader.class);
         var countSpy = spy(new Count());
         when(countSpy.in()).thenReturn(reader);
-        var iter = Arrays.asList(input).iterator();
-        try {
-            when(reader.readLine()).thenAnswer(invocation -> iter.hasNext() ? iter.next() : null);
-        } catch (IOException ignored) {}
+        when(reader.lines()).thenReturn(Stream.of(input));
         this.commandLine = new CommandLine(countSpy);
         this.out = new StringWriter();
         this.commandLine.setOut(new PrintWriter(this.out));
