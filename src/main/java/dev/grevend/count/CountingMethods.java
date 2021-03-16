@@ -18,7 +18,7 @@ public enum CountingMethods implements Function<String, IntStream> {
          */
         @Override
         public IntStream apply(String line) {
-            return humanReadable.matcher(line.strip()).results().map(MatchResult::group).mapToInt(String::length);
+            return humanReadable.matcher(line).results().map(MatchResult::group).mapToInt(String::length);
         }
 
     }, words() {
@@ -32,7 +32,7 @@ public enum CountingMethods implements Function<String, IntStream> {
 
         @Override
         public IntStream apply(String line) {
-            return IntStream.empty();
+            return IntStream.of(line.isBlank() ? 0 : 1);
         }
 
     };
