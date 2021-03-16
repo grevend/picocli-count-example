@@ -42,7 +42,7 @@ public class Count implements Callable<Integer> {
     }
 
     /**
-     * Reads text from the selected input stream, computes the character count, and prints the value into the specified output stream.
+     * Reads text from the selected input stream, computes a count using the method option, and prints the value into the specified output stream.
      *
      * @return the command exit code
      *
