@@ -15,10 +15,10 @@ public class CountTest {
     }
 
     @Test
-    public void testStdin() {
+    public void testHumanReadableCount() {
         var commandLine = new TestCommandLine(new String[]{}, new String[]{"test"});
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString()).isEqualTo("test" + System.lineSeparator());
+        assertThat(commandLine.out().toString()).startsWith("4");
     }
 
 }
