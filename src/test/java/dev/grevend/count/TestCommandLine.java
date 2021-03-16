@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
  *
  * @since sprint 1
  */
-public class TestCommandLine {
+public final class TestCommandLine {
 
     private final String[] args;
     private final CommandLine commandLine;
