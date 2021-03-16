@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.regex.MatchResult;
 
 import static picocli.CommandLine.Command;
 
