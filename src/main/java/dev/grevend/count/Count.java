@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 import static picocli.CommandLine.Command;
 
@@ -24,8 +23,6 @@ import static picocli.CommandLine.Command;
 @Command(name = "count", version = "count 1.0", mixinStandardHelpOptions = true,
     description = "Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.")
 public class Count implements Callable<Integer> {
-
-    private final Pattern humanReadable = Pattern.compile("[^\\p{C}\\p{Z}]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Spec
     private CommandSpec spec;
@@ -56,13 +53,7 @@ public class Count implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         try (var reader = in(); var writer = out()) {
-            writer.println(reader.lines()
-                .filter(Objects::nonNull)
-                .flatMapToInt(line -> humanReadable.matcher(line.strip())
-                    .results()
-                    .map(MatchResult::group)
-                    .mapToInt(String::length))
-                .reduce(0, Integer::sum));
+            writer.println(reader.lines().filter(Objects::nonNull).flatMapToInt(method).reduce(0, Integer::sum));
         }
         return 0;
     }
