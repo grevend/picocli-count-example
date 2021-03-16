@@ -2,6 +2,7 @@ package dev.grevend.count;
 
 import picocli.CommandLine;
 
+import java.io.InputStream;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.Command;
@@ -29,6 +30,17 @@ public class Count implements Callable<Integer> {
     @Override
     public Integer call() {
         return 0;
+    }
+
+    /**
+     * Returns or constructs an input stream based on the selected command options.
+     *
+     * @return the input stream
+     *
+     * @since sprint 1
+     */
+    private InputStream in() {
+        return System.in;
     }
 
 }
