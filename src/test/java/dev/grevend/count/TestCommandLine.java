@@ -28,7 +28,7 @@ public class TestCommandLine {
      *
      * @since sprint 1
      */
-    protected TestCommandLine(String[] args) {
+    protected TestCommandLine(String... args) {
         this.args = args;
         this.commandLine = new CommandLine(new Count());
         this.out = new StringWriter();
