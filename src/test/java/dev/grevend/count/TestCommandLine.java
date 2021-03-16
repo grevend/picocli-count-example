@@ -1,9 +1,14 @@
 package dev.grevend.count;
 
+import org.assertj.core.util.Arrays;
 import picocli.CommandLine;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import static org.mockito.Mockito.*;
 
 /**
  * A testable CommandLine object.
@@ -27,7 +32,29 @@ public class TestCommandLine {
         this.args = args;
         this.commandLine = new CommandLine(new Count());
         this.out = new StringWriter();
-        this.commandLine.setOut(new PrintWriter(out));
+        this.commandLine.setOut(new PrintWriter(this.out));
+    }
+
+    /**
+     * Constructs a test CommandLine with the provided args and a mocked input stream.
+     *
+     * @param args  the test command args
+     * @param input the test command input
+     *
+     * @since sprint 1
+     */
+    protected TestCommandLine(String[] args, String[] input) {
+        this.args = args;
+        var reader = mock(BufferedReader.class);
+        var countSpy = spy(new Count());
+        when(countSpy.in()).thenReturn(reader);
+        var iter = Arrays.asList(input).iterator();
+        try {
+            when(reader.readLine()).thenAnswer(invocation -> iter.hasNext() ? iter.next() : null);
+        } catch (IOException ignored) {}
+        this.commandLine = new CommandLine(countSpy);
+        this.out = new StringWriter();
+        this.commandLine.setOut(new PrintWriter(this.out));
     }
 
     /**
