@@ -2,6 +2,7 @@ package dev.grevend.count;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 import java.io.BufferedReader;
@@ -28,6 +29,10 @@ public class Count implements Callable<Integer> {
 
     @Spec
     private CommandSpec spec;
+
+    @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
+        defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
+    private CountingMethods method;
 
     /**
      * Main program entry point. Creates a command line instance and delegates the given program args to the count command.
