@@ -2,15 +2,15 @@ package dev.grevend.count;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 import static picocli.CommandLine.Command;
 
@@ -26,7 +26,9 @@ public class Count implements Callable<Integer> {
     @Spec
     private CommandSpec spec;
 
-    private final Pattern humanReadable = Pattern.compile("[^\\p{C}\\p{Z}]+", Pattern.UNICODE_CHARACTER_CLASS);
+    @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
+        defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
+    private CountingMethods method;
 
     /**
      * Main program entry point. Creates a command line instance and delegates the given program args to the count command.
@@ -40,7 +42,7 @@ public class Count implements Callable<Integer> {
     }
 
     /**
-     * Reads text from the selected input stream, computes the character count, and prints the value into the specified output stream.
+     * Reads text from the selected input stream, computes a count using the method option, and prints the value into the specified output stream.
      *
      * @return the command exit code
      *
@@ -49,15 +51,8 @@ public class Count implements Callable<Integer> {
      */
     @Override
     public Integer call() throws IOException {
-        try (var reader = in(); var out = out()) {
-            var count = 0;
-            for (String line = reader.readLine(); line != null && !line.isBlank(); line = reader.readLine()) {
-                count += humanReadable.matcher(line.strip()).results()
-                    .map(MatchResult::group)
-                    .map(String::length)
-                    .reduce(0, Integer::sum);
-            }
-            out.println(count);
+        try (var reader = in(); var writer = out()) {
+            writer.println(reader.lines().filter(Objects::nonNull).flatMapToInt(method).reduce(0, Integer::sum));
         }
         return 0;
     }
