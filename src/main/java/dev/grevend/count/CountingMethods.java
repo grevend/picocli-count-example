@@ -9,24 +9,26 @@ public enum CountingMethods implements Function<String, IntStream> {
 
     chars() {
 
+        /**
+         * Computes the character counts / lengths of all matched groups based on the humanReadable pattern.
+         *
+         * @param line the current text chunk
+         * @return an int stream of counts
+         * @since sprint 1
+         */
         @Override
         public IntStream apply(String line) {
-            return humanReadable.matcher(line.strip())
-                .results()
-                .map(MatchResult::group)
-                .mapToInt(String::length);
+            return humanReadable.matcher(line.strip()).results().map(MatchResult::group).mapToInt(String::length);
         }
 
-    },
-    words() {
+    }, words() {
 
         @Override
         public IntStream apply(String line) {
             return IntStream.empty();
         }
 
-    },
-    lines() {
+    }, lines() {
 
         @Override
         public IntStream apply(String line) {
