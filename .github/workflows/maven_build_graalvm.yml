@@ -6,10 +6,6 @@ on:
     tags:
       - 'v*.*.*'
     branches: [ main ]
-  pull_request:
-    tags:
-      - 'v*.*.*'
-    branches: [ main ]
 
   workflow_dispatch:
 
