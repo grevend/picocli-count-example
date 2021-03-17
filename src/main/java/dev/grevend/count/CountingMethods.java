@@ -3,9 +3,9 @@ package dev.grevend.count;
 import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
-public enum CountingMethods implements Function<String, IntStream> {
+public enum CountingMethods implements Function<String, LongStream> {
 
     chars() {
 
@@ -18,15 +18,15 @@ public enum CountingMethods implements Function<String, IntStream> {
          * @since sprint 1
          */
         @Override
-        public IntStream apply(String line) {
-            return humanReadable.matcher(line).results().map(MatchResult::group).mapToInt(String::length);
+        public LongStream apply(String line) {
+            return humanReadable.matcher(line).results().map(MatchResult::group).mapToLong(String::length);
         }
 
     }, words() {
 
         @Override
-        public IntStream apply(String line) {
-            return IntStream.empty();
+        public LongStream apply(String line) {
+            return LongStream.of(word.matcher(line).results().count());
         }
 
     }, lines() {
@@ -39,12 +39,13 @@ public enum CountingMethods implements Function<String, IntStream> {
          * @since sprint 1
          */
         @Override
-        public IntStream apply(String line) {
-            return IntStream.of(line.isBlank() ? 0 : 1);
+        public LongStream apply(String line) {
+            return LongStream.of(line.isBlank() ? 0 : 1);
         }
 
     };
 
-    private static final Pattern humanReadable = Pattern.compile("[^\\p{C}\\p{Z}]+", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern humanReadable = Pattern.compile("[^\\p{C}\\p{Z}]+", Pattern.UNICODE_CHARACTER_CLASS),
+        word = Pattern.compile("[^\\p{C}\\p{Z}\\p{S}\\p{P}\\p{N}]+", Pattern.UNICODE_CHARACTER_CLASS);
 
 }
