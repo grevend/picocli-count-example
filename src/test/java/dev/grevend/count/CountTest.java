@@ -66,4 +66,22 @@ public class CountTest {
         assertThat(commandLine.out().toString()).startsWith(count);
     }
 
+    @CsvSource({
+        ",0", "\n,0", " ,0", "\t,0",
+        "a,1", "ab,1", "a b,2", "ab c,2", "a-b,2", "a_b,1",
+        "1,1", "1234567890,1", "-0,1",
+        "‰,0", "∠,0", "≅,0", "∑,0", "∄,0",
+        "!§$%&/()[]{}`´*+~#':.;<>|^°€,0",
+        "ü,1", "é,1",
+        "тест,1",
+        "امتحان,1",
+        "汉字,1", "漢字,1", "Hán tự,2", "漢字,1", "\uD876\uDE21倱,1", "한자,1", "漢字,1", "漢字,1", "かんじ,1",
+    })
+    @ParameterizedTest
+    public void testWordCount(String input, String count) {
+        var commandLine = new TestCommandLine(new String[]{"-m", "words"}, new String[]{input});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString()).startsWith(count);
+    }
+
 }
