@@ -75,3 +75,12 @@ jobs:
           native-image -jar target/picocli-count-example-1.0-jar-with-dependencies.jar count-1.0-linux
           cp target/picocli-count-example-1.0-jar-with-dependencies.jar count-1.0-all.jar
           ls
+      
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            count-1.0-all.jar
+            count-1.0-linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
