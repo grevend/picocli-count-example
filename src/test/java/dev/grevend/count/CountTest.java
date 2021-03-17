@@ -35,7 +35,7 @@ public class CountTest {
     })
     @ParameterizedTest
     public void testHumanReadableCount(String input, String count) {
-        var commandLine = new TestCommandLine(new String[]{}, new String[]{input});
+        var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString()).startsWith(count);
     }
@@ -43,7 +43,7 @@ public class CountTest {
     @ParameterizedTest
     @ValueSource(strings = {"\u0000", "\u0003", "\u001C", "\u0080", "\u0091", "\u0020", "\u2072", "\uFB07", "\uFB10"})
     public void testNonHumanReadableCount(String input) {
-        var commandLine = new TestCommandLine(new String[]{}, new String[]{input});
+        var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString()).startsWith("0");
     }
