@@ -13,7 +13,7 @@ public enum CountingMethods implements Function<String, LongStream> {
          * Computes the character counts / lengths of all matched groups based on the humanReadable pattern.
          *
          * @param line the current text chunk
-         * @return an int stream of counts
+         * @return a long stream of counts
          *
          * @since sprint 1
          */
@@ -24,6 +24,14 @@ public enum CountingMethods implements Function<String, LongStream> {
 
     }, words() {
 
+        /**
+         * Computes the word count of the given text.
+         *
+         * @param line the current text chunk
+         * @return a long stream containing the word count
+         *
+         * @since sprint 1
+         */
         @Override
         public LongStream apply(String line) {
             return LongStream.of(word.matcher(line).results().count());
@@ -33,8 +41,9 @@ public enum CountingMethods implements Function<String, LongStream> {
 
         /**
          * Computes the line count by checking if the text is blank.
+         *
          * @param line the current text chunk
-         * @return an int stream that contains zero if the chunk is blank or else 1
+         * @return a long stream that contains zero if the chunk is blank or else 1
          *
          * @since sprint 1
          */
