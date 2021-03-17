@@ -54,7 +54,8 @@ public enum CountingMethods implements Function<String, LongStream> {
 
     };
 
+    //strict word check: (\S|)[^\p{C}\p{Z}\p{S}\p{Ps}\p{Pe}\p{Pi}\p{Pf}\p{Pc}\p{Po}\p{N}]+(\S|)
     private static final Pattern humanReadable = Pattern.compile("[^\\p{C}\\p{Z}]+", Pattern.UNICODE_CHARACTER_CLASS),
-        word = Pattern.compile("[^\\p{C}\\p{Z}\\p{S}\\p{P}\\p{N}]+", Pattern.UNICODE_CHARACTER_CLASS);
+        word = Pattern.compile("\\w+", Pattern.UNICODE_CHARACTER_CLASS);
 
 }
