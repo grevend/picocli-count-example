@@ -71,5 +71,6 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn package
-          ls target
+          mvn clean compile assembly:single
+          native-image -jar target/picocli-count-example-1.0-jar-with-dependencies.jar count-1.0-linux
+          cp target/picocli-count-example-1.0-jar-with-dependencies.jar count-1.0-all.jar
