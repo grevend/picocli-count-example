@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
+import static dev.grevend.count.Utils.lines;
 import static picocli.CommandLine.Command;
 
 /**
@@ -52,8 +53,8 @@ public class Count implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         try (var reader = in(); var writer = out()) {
-            writer.println(reader.lines().filter(Objects::nonNull).map(String::strip)
-                .flatMapToInt(method).reduce(0, Integer::sum));
+            writer.println(lines(reader).filter(Objects::nonNull).map(String::strip)
+                .flatMapToLong(method).reduce(0, Long::sum));
         }
         return 0;
     }

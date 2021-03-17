@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
@@ -34,9 +35,17 @@ public class CountTest {
     })
     @ParameterizedTest
     public void testHumanReadableCount(String input, String count) {
-        var commandLine = new TestCommandLine(new String[]{}, new String[]{input});
+        var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString()).startsWith(count);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\u0000", "\u0003", "\u001C", "\u0080", "\u0091", "\u0020", "\u2072", "\uFB07", "\uFB10"})
+    public void testNonHumanReadableCount(String input) {
+        var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString()).startsWith("0");
     }
 
     private static Stream<Arguments> testLines() {
@@ -53,6 +62,24 @@ public class CountTest {
     @ParameterizedTest
     public void testLineCount(String[] input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "lines"}, input);
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString()).startsWith(count);
+    }
+
+    @CsvSource({
+        ",0", "\n,0", " ,0", "\t,0",
+        "a,1", "ab,1", "a b,2", "ab c,2", "a-b,2", "a_b,1",
+        "1,1", "1234567890,1", "-0,1",
+        "‰,0", "∠,0", "≅,0", "∑,0", "∄,0",
+        "!§$%&/()[]{}`´*+~#':.;<>|^°€,0",
+        "ü,1", "é,1",
+        "тест,1",
+        "امتحان,1",
+        "汉字,1", "漢字,1", "Hán tự,2", "漢字,1", "\uD876\uDE21倱,1", "한자,1", "漢字,1", "漢字,1", "かんじ,1",
+    })
+    @ParameterizedTest
+    public void testWordCount(String input, String count) {
+        var commandLine = new TestCommandLine(new String[]{"-m", "words"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString()).startsWith(count);
     }

@@ -3,8 +3,10 @@ package dev.grevend.count;
 import picocli.CommandLine;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
@@ -47,7 +49,12 @@ public final class TestCommandLine {
         var reader = mock(BufferedReader.class);
         var countSpy = spy(new Count());
         when(countSpy.in()).thenReturn(reader);
-        when(reader.lines()).thenReturn(Stream.of(input));
+        var iter = Arrays.asList(input).iterator();
+        try {
+            when(reader.readLine()).thenAnswer(invocation -> iter.hasNext() ? iter.next() : null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.commandLine = new CommandLine(countSpy);
         this.out = new StringWriter();
         this.commandLine.setOut(new PrintWriter(this.out));
