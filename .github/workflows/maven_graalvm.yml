@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: graalvm
-          key: ${{ runner.os }}-graalvm-21.0.0.2
+          key: ${{ runner.os }}-v1-graalvm-21.0.0.2
 
       - name: Install GraalVM
         if: steps.cache-graalvm.outputs.cache-hit != 'true'
