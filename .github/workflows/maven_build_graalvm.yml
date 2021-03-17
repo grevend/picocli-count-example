@@ -3,8 +3,12 @@ name: Maven CD with GraalVM
 
 on:
   push:
+    tags:
+      - 'v*.*.*'
     branches: [ main ]
   pull_request:
+    tags:
+      - 'v*.*.*'
     branches: [ main ]
 
   workflow_dispatch:
