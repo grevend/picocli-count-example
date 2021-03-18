@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
+import static dev.grevend.count.CountingMethods.*;
+import static java.util.Objects.requireNonNullElse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
@@ -37,7 +39,9 @@ public class CountTest {
     public void testHumanReadableCount(String input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString().strip()).endsWith(count);
+        var res = commandLine.out().toString().strip();
+        assertThat(res).endsWith(count);
+        assertThat(chars.apply(requireNonNullElse(input, "")).sum() + "").endsWith(res);
     }
 
     @ParameterizedTest
@@ -63,7 +67,9 @@ public class CountTest {
     public void testLineCount(String[] input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "lines"}, input);
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString().strip()).endsWith(count);
+        var res = commandLine.out().toString().strip();
+        assertThat(res).endsWith(count);
+        assertThat(Stream.of(input).flatMapToLong(lines).sum() + "").endsWith(res);
     }
 
     @CsvSource({
@@ -81,7 +87,17 @@ public class CountTest {
     public void testWordCount(String input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "words"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString().strip()).endsWith(count);
+        var res = commandLine.out().toString().strip();
+        assertThat(res).endsWith(count);
+        assertThat(words.apply(requireNonNullElse(input, "")).sum() + "").endsWith(res);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\u0000", "\u0003", "\u001C", "\u0080", "\u0091", "\u0020", "\u2072", "\uFB07", "\uFB10"})
+    public void testNonReadableWordCount(String input) {
+        var commandLine = new TestCommandLine(new String[]{"-m", "words"}, new String[]{input});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString().strip()).endsWith("0");
     }
 
 }
