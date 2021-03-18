@@ -27,7 +27,7 @@ public final class Utils {
      * @since sprint 1
      */
     public static Stream<String> lines(BufferedReader reader) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<>() {
+        return reader != null ? StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<>() {
             private String nextLine = null;
 
             @Override
@@ -49,7 +49,7 @@ public final class Utils {
                     throw new NoSuchElementException();
                 }
             }
-        }, Spliterator.ORDERED | Spliterator.NONNULL), false);
+        }, Spliterator.ORDERED | Spliterator.NONNULL), false) : Stream.empty();
     }
 
 }
