@@ -65,13 +65,17 @@ public class Count implements Callable<Integer> {
     /**
      * Returns or constructs an input stream based on the selected command options.
      *
-     * @return the input stream
+     * @return the input stream or null if the input file is a directory
      *
      * @throws FileNotFoundException if the input file is not found
      * @since sprint 1
      */
     protected BufferedReader in() throws FileNotFoundException {
-        return new BufferedReader(new InputStreamReader(inputFile != null && inputFile.isFile() ? new FileInputStream(inputFile) : System.in));
+        if(inputFile != null && inputFile.isDirectory()) {
+            spec.commandLine().getErr().println("Input file is a directory!");
+            return null;
+        }
+        return new BufferedReader(new InputStreamReader(inputFile != null ? new FileInputStream(inputFile) : System.in));
     }
 
     /**
@@ -83,7 +87,15 @@ public class Count implements Callable<Integer> {
      * @since sprint 1
      */
     private PrintWriter out() throws IOException {
-        if(outputFile != null && outputFile.isFile() && !outputFile.exists()) outputFile.createNewFile();
+        if(outputFile != null && !outputFile.exists()) {
+            if(outputFile.isFile()) {
+                //noinspection ResultOfMethodCallIgnored
+                outputFile.createNewFile();
+            } else {
+                spec.commandLine().getErr().println("Output file is a directory!");
+                return spec.commandLine().getOut();
+            }
+        }
         return outputFile == null ? spec.commandLine().getOut() : new PrintWriter(outputFile);
     }
 
