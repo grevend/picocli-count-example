@@ -10,7 +10,12 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class Utils {
+/**
+ * Miscellaneous count command implementation utilities.
+ *
+ * @since sprint 1
+ */
+public final class Utils {
 
     /**
      * Returns a lazily populated {@code Stream} from the given {@code BufferedReader}.
