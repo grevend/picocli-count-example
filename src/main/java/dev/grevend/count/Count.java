@@ -53,8 +53,7 @@ public class Count implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         try (var reader = in(); var writer = out()) {
-            writer.println(lines(reader).filter(Objects::nonNull).map(String::strip)
-                .flatMapToLong(method).reduce(0, Long::sum));
+            writer.println(lines(reader).filter(Objects::nonNull).map(String::strip).flatMapToLong(method).sum());
         }
         return 0;
     }
