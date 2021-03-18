@@ -25,8 +25,11 @@ public class Count implements Callable<Integer> {
     @Spec
     private CommandSpec spec;
 
-    @Parameters(index = "0", description = "Input file", arity = "0..1")
+    @Parameters(index = "0", description = "Input file (default: read from console)", arity = "0..1")
     private File inputFile;
+
+    @Option(names = {"-o", "--out"}, description = "Output file (default: print to console)", arity = "0..1")
+    private File outputFile;
 
     @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
         defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
@@ -62,13 +65,17 @@ public class Count implements Callable<Integer> {
     /**
      * Returns or constructs an input stream based on the selected command options.
      *
-     * @return the input stream
+     * @return the input stream or null if the input file is a directory
      *
      * @throws FileNotFoundException if the input file is not found
      * @since sprint 1
      */
     protected BufferedReader in() throws FileNotFoundException {
-        return new BufferedReader(new InputStreamReader(inputFile == null ? System.in : new FileInputStream(inputFile)));
+        if(inputFile != null && !inputFile.isFile()) {
+            spec.commandLine().getErr().println("Input file is a directory!");
+            return null;
+        }
+        return new BufferedReader(new InputStreamReader(inputFile != null ? new FileInputStream(inputFile) : System.in));
     }
 
     /**
@@ -76,10 +83,15 @@ public class Count implements Callable<Integer> {
      *
      * @return the output stream
      *
+     * @throws java.io.IOException if the output file creation fails
      * @since sprint 1
      */
-    private PrintWriter out() {
-        return spec.commandLine().getOut();
+    private PrintWriter out() throws IOException {
+        if(outputFile != null && !outputFile.exists() && !outputFile.isDirectory()) {
+            //noinspection ResultOfMethodCallIgnored
+            outputFile.createNewFile();
+        }
+        return outputFile == null ? spec.commandLine().getOut() : new PrintWriter(outputFile);
     }
 
 }

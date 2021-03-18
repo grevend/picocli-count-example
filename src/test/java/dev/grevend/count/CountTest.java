@@ -7,6 +7,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static dev.grevend.count.CountingMethods.*;
@@ -22,6 +25,14 @@ public class CountTest {
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString()).contains("Count the human-readable characters, lines, or" +
             " words from stdin or a file and" + System.lineSeparator() + "write the number to stdout or a file.");
+    }
+
+    @Test
+    public void testDirectoryAsInputFile() {
+        var commandLine = new TestCommandLine("src/test/resources/test-input/");
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString().strip()).endsWith("0");
+        assertThat(commandLine.err().toString()).startsWith("Input file is a directory!");
     }
 
     @CsvSource({
@@ -59,6 +70,16 @@ public class CountTest {
         assertThat(commandLine.out().toString().strip()).endsWith("16");
     }
 
+    @Test
+    public void testHumanReadableCountToOutputFile() throws IOException {
+        var path = Path.of("src/test/resources/test-output.txt");
+        var commandLine = new TestCommandLine(new String[]{"-o", path.toString(), "-m", "chars"},
+            new String[]{"Hello World", "& count"});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(Files.lines(path).findFirst()).hasValue("16");
+        Files.deleteIfExists(path);
+    }
+
     private static Stream<Arguments> testLines() {
         return Stream.of(
             of(new String[]{}, "0"),
@@ -84,6 +105,16 @@ public class CountTest {
         var commandLine = new TestCommandLine("src/test/resources/test-input.txt", "-m", "lines");
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString().strip()).endsWith("2");
+    }
+
+    @Test
+    public void testLineCountToOutputFile() throws IOException {
+        var path = Path.of("src/test/resources/test-output.txt");
+        var commandLine = new TestCommandLine(new String[]{"-o", path.toString(), "-m", "lines"},
+            new String[]{"Hello World", "& count"});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(Files.lines(path).findFirst()).hasValue("2");
+        Files.deleteIfExists(path);
     }
 
     @CsvSource({
@@ -119,6 +150,16 @@ public class CountTest {
         var commandLine = new TestCommandLine("src/test/resources/test-input.txt", "-m", "words");
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString().strip()).endsWith("3");
+    }
+
+    @Test
+    public void testWordCountToOutputFile() throws IOException {
+        var path = Path.of("src/test/resources/test-output.txt");
+        var commandLine = new TestCommandLine(new String[]{"-o", path.toString(), "-m", "words"},
+            new String[]{"Hello World", "& count"});
+        assertThat(commandLine.execute()).isZero();
+        assertThat(Files.lines(path).findFirst()).hasValue("3");
+        Files.deleteIfExists(path);
     }
 
 }
