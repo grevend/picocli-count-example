@@ -27,14 +27,11 @@ public class Utils {
 
             @Override
             public boolean hasNext() {
-                if (nextLine == null) {
-                    try {
-                        return ((nextLine = reader.readLine()) != null && !nextLine.isBlank());
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
+                try {
+                    return nextLine != null || ((nextLine = reader.readLine()) != null && !nextLine.isBlank());
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
                 }
-                return true;
             }
 
             @Override
