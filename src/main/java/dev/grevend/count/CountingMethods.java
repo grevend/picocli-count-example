@@ -5,6 +5,11 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
+/**
+ * Enumeration of counting methods.
+ *
+ * @since sprint 1
+ */
 public enum CountingMethods implements Function<String, LongStream> {
 
     chars() {
