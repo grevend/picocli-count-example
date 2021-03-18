@@ -25,8 +25,11 @@ public class Count implements Callable<Integer> {
     @Spec
     private CommandSpec spec;
 
-    @Parameters(index = "0", description = "Input file", arity = "0..1")
+    @Parameters(index = "0", description = "Input file (default: read from console)", arity = "0..1")
     private File inputFile;
+
+    @Option(names = {"-o", "--out"}, description = "Output file (default: print to console)", arity = "0..1")
+    private File outputFile;
 
     @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
         defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
@@ -76,10 +79,12 @@ public class Count implements Callable<Integer> {
      *
      * @return the output stream
      *
+     * @throws java.io.IOException if the output file creation fails
      * @since sprint 1
      */
-    private PrintWriter out() {
-        return spec.commandLine().getOut();
+    private PrintWriter out() throws IOException {
+        if(outputFile != null && !outputFile.exists()) outputFile.createNewFile();
+        return outputFile == null ? spec.commandLine().getOut() : new PrintWriter(outputFile);
     }
 
 }
