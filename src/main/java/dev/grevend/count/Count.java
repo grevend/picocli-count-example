@@ -71,7 +71,7 @@ public class Count implements Callable<Integer> {
      * @since sprint 1
      */
     protected BufferedReader in() throws FileNotFoundException {
-        return new BufferedReader(new InputStreamReader(inputFile == null ? System.in : new FileInputStream(inputFile)));
+        return new BufferedReader(new InputStreamReader(inputFile != null && inputFile.isFile() ? new FileInputStream(inputFile) : System.in));
     }
 
     /**
@@ -83,7 +83,7 @@ public class Count implements Callable<Integer> {
      * @since sprint 1
      */
     private PrintWriter out() throws IOException {
-        if(outputFile != null && !outputFile.exists()) outputFile.createNewFile();
+        if(outputFile != null && outputFile.isFile() && !outputFile.exists()) outputFile.createNewFile();
         return outputFile == null ? spec.commandLine().getOut() : new PrintWriter(outputFile);
     }
 
