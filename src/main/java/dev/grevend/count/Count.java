@@ -88,7 +88,7 @@ public class Count implements Callable<Integer> {
      */
     private PrintWriter out() throws IOException {
         if(outputFile != null && !outputFile.exists()) {
-            if(outputFile.isFile()) {
+            if(!outputFile.isDirectory()) {
                 //noinspection ResultOfMethodCallIgnored
                 outputFile.createNewFile();
             } else {
