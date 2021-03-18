@@ -52,6 +52,13 @@ public class CountTest {
         assertThat(commandLine.out().toString().strip()).endsWith("0");
     }
 
+    @Test
+    public void testHumanReadableCountFromInputFile() {
+        var commandLine = new TestCommandLine("src/test/resources/test-input.txt", "-m", "chars");
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString().strip()).endsWith("16");
+    }
+
     private static Stream<Arguments> testLines() {
         return Stream.of(
             of(new String[]{}, "0"),
@@ -70,6 +77,13 @@ public class CountTest {
         var res = commandLine.out().toString().strip();
         assertThat(res).endsWith(count);
         assertThat(Stream.of(input).flatMapToLong(lines).sum() + "").endsWith(res);
+    }
+
+    @Test
+    public void testLineCountFromInputFile() {
+        var commandLine = new TestCommandLine("src/test/resources/test-input.txt", "-m", "lines");
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString().strip()).endsWith("2");
     }
 
     @CsvSource({
@@ -98,6 +112,13 @@ public class CountTest {
         var commandLine = new TestCommandLine(new String[]{"-m", "words"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString().strip()).endsWith("0");
+    }
+
+    @Test
+    public void testWordCountFromInputFile() {
+        var commandLine = new TestCommandLine("src/test/resources/test-input.txt", "-m", "words");
+        assertThat(commandLine.execute()).isZero();
+        assertThat(commandLine.out().toString().strip()).endsWith("3");
     }
 
 }
