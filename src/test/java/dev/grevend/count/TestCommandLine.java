@@ -19,7 +19,7 @@ public final class TestCommandLine {
 
     private final String[] args;
     private final CommandLine commandLine;
-    private final StringWriter out;
+    private final StringWriter out, err;
 
     /**
      * Constructs a test CommandLine with the provided args.
@@ -32,7 +32,9 @@ public final class TestCommandLine {
         this.args = args;
         this.commandLine = new CommandLine(new Count());
         this.out = new StringWriter();
+        this.err = new StringWriter();
         this.commandLine.setOut(new PrintWriter(this.out));
+        this.commandLine.setErr(new PrintWriter(this.err));
     }
 
     /**
@@ -56,7 +58,9 @@ public final class TestCommandLine {
         }
         this.commandLine = new CommandLine(countSpy);
         this.out = new StringWriter();
+        this.err = new StringWriter();
         this.commandLine.setOut(new PrintWriter(this.out));
+        this.commandLine.setErr(new PrintWriter(this.err));
     }
 
     /**
@@ -79,6 +83,17 @@ public final class TestCommandLine {
      */
     public StringWriter out() {
         return out;
+    }
+
+    /**
+     * Returns the constructed StringWriter representing the test error stream.
+     *
+     * @return the error stream as a StringWriter
+     *
+     * @since sprint 1
+     */
+    public StringWriter err() {
+        return err;
     }
 
     /**
