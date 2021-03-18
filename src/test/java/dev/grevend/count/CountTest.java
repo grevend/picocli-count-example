@@ -37,7 +37,7 @@ public class CountTest {
     public void testHumanReadableCount(String input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString()).startsWith(count);
+        assertThat(commandLine.out().toString().strip()).endsWith(count);
     }
 
     @ParameterizedTest
@@ -45,7 +45,7 @@ public class CountTest {
     public void testNonHumanReadableCount(String input) {
         var commandLine = new TestCommandLine(new String[]{"-m", "chars"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString()).startsWith("0");
+        assertThat(commandLine.out().toString().strip()).endsWith("0");
     }
 
     private static Stream<Arguments> testLines() {
@@ -63,7 +63,7 @@ public class CountTest {
     public void testLineCount(String[] input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "lines"}, input);
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString()).startsWith(count);
+        assertThat(commandLine.out().toString().strip()).endsWith(count);
     }
 
     @CsvSource({
@@ -81,7 +81,7 @@ public class CountTest {
     public void testWordCount(String input, String count) {
         var commandLine = new TestCommandLine(new String[]{"-m", "words"}, new String[]{input});
         assertThat(commandLine.execute()).isZero();
-        assertThat(commandLine.out().toString()).startsWith(count);
+        assertThat(commandLine.out().toString().strip()).endsWith(count);
     }
 
 }
