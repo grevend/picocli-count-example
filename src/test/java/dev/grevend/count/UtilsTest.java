@@ -16,6 +16,11 @@ import static org.mockito.Mockito.when;
 public class UtilsTest {
 
     @Test
+    public void testLinesNullReader() {
+        assertThat(Utils.lines(null).count()).isZero();
+    }
+
+    @Test
     public void testLinesHasNext() throws IOException {
         var reader = mock(BufferedReader.class);
         var values = List.of("first", "second").iterator();
