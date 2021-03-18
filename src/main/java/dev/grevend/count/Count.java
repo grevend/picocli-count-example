@@ -3,12 +3,10 @@ package dev.grevend.count;
 import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -26,6 +24,9 @@ public class Count implements Callable<Integer> {
 
     @Spec
     private CommandSpec spec;
+
+    @Parameters(index = "0", description = "Input file", arity = "0..1")
+    private File inputFile;
 
     @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
         defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
@@ -63,10 +64,11 @@ public class Count implements Callable<Integer> {
      *
      * @return the input stream
      *
+     * @throws FileNotFoundException if the input file is not found
      * @since sprint 1
      */
-    protected BufferedReader in() {
-        return new BufferedReader(new InputStreamReader(System.in));
+    protected BufferedReader in() throws FileNotFoundException {
+        return new BufferedReader(new InputStreamReader(inputFile == null ? System.in : new FileInputStream(inputFile)));
     }
 
     /**
