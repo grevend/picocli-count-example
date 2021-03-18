@@ -71,7 +71,7 @@ public class Count implements Callable<Integer> {
      * @since sprint 1
      */
     protected BufferedReader in() throws FileNotFoundException {
-        if(inputFile != null && inputFile.isDirectory()) {
+        if(inputFile != null && !inputFile.isFile()) {
             spec.commandLine().getErr().println("Input file is a directory!");
             return null;
         }
@@ -87,14 +87,9 @@ public class Count implements Callable<Integer> {
      * @since sprint 1
      */
     private PrintWriter out() throws IOException {
-        if(outputFile != null && !outputFile.exists()) {
-            if(!outputFile.isDirectory()) {
-                //noinspection ResultOfMethodCallIgnored
-                outputFile.createNewFile();
-            } else {
-                spec.commandLine().getErr().println("Output file is a directory!");
-                return spec.commandLine().getOut();
-            }
+        if(outputFile != null && !outputFile.exists() && !outputFile.isDirectory()) {
+            //noinspection ResultOfMethodCallIgnored
+            outputFile.createNewFile();
         }
         return outputFile == null ? spec.commandLine().getOut() : new PrintWriter(outputFile);
     }
