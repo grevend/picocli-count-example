@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
@@ -80,17 +79,6 @@ public final class TestCommandLine {
      */
     public StringWriter out() {
         return out;
-    }
-
-    /**
-     * Returns the test CommandLine object.
-     *
-     * @return the test CommandLine
-     *
-     * @since sprint 1
-     */
-    public CommandLine commandLine() {
-        return commandLine;
     }
 
     /**
