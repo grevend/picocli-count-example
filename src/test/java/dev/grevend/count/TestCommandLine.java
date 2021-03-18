@@ -47,9 +47,9 @@ public final class TestCommandLine {
         this.args = args;
         var reader = mock(BufferedReader.class);
         var countSpy = spy(new Count());
-        when(countSpy.in()).thenReturn(reader);
-        var iter = Arrays.asList(input).iterator();
         try {
+            when(countSpy.in()).thenReturn(reader);
+            var iter = Arrays.asList(input).iterator();
             when(reader.readLine()).thenAnswer(invocation -> iter.hasNext() ? iter.next() : null);
         } catch (IOException e) {
             e.printStackTrace();
