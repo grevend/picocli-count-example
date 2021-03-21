@@ -69,17 +69,29 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build with Maven
+        run: mvn clean compile assembly:single
+
+      - name: Build Native Image
+        run: |  
+          native-image -jar target/picocli-count-example-1.2.1-jar-with-dependencies.jar count-1.2.1-linux
+          cp target/picocli-count-example-1.2.1-jar-with-dependencies.jar count-1.2.1-all.jar
+
+      - name: Create Debian Package
         run: |
-          mvn clean compile assembly:single
-          native-image -jar target/picocli-count-example-1.2.0-jar-with-dependencies.jar count-1.2.0-linux
-          cp target/picocli-count-example-1.2.0-jar-with-dependencies.jar count-1.2.0-all.jar
-      
+          mkdir -p count/DEBIAN/
+          echo -en "Package: count\nVersion: 1.2.1\nArchitecture: all\nSection: utils\nMaintainer: David Greven\nDescription: Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.\n" >> count/DEBIAN/control
+          mkdir -p count/usr/bin/
+          cp count-1.2.1-linux count/usr/bin/count
+          dpkg-deb --build count
+          mv count.deb count-1.2.1.deb
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            count-1.2.0-all.jar
-            count-1.2.0-linux
+            count-1.2.1-all.jar
+            count-1.2.1-linux
+            count-1.2.1.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -6,7 +6,7 @@
 
     <groupId>dev.grevend.count</groupId>
     <artifactId>picocli-count-example</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
