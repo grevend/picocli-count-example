@@ -32,7 +32,7 @@ public class CountTest {
         var commandLine = new TestCommandLine("src/test/resources/test-input/");
         assertThat(commandLine.execute()).isZero();
         assertThat(commandLine.out().toString().strip()).endsWith("0");
-        assertThat(commandLine.err().toString()).startsWith("Input file is a directory!");
+        assertThat(commandLine.err().toString()).startsWith("Input file does not exist!");
     }
 
     @CsvSource({
