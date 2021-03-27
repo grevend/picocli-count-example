@@ -18,7 +18,7 @@ import static picocli.CommandLine.Command;
  *
  * @since sprint 1
  */
-@Command(name = "count", version = "count 1.2.1", mixinStandardHelpOptions = true,
+@Command(name = "count", version = "count 1.2.2", mixinStandardHelpOptions = true,
     description = "Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.")
 public class Count implements Callable<Integer> {
 
@@ -31,7 +31,7 @@ public class Count implements Callable<Integer> {
     @Option(names = {"-o", "--out"}, description = "Output file (default: print to console)", arity = "0..1")
     private File outputFile;
 
-    @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
+    @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)\n\tOptions: chars, words, lines", arity = "0..1",
         defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
     private CountingMethods method;
 
@@ -60,6 +60,9 @@ public class Count implements Callable<Integer> {
             if(writer == null) {
                 return 0;
             } else {
+                if(outputFile == null) {
+                    writer.println("Enter a blank line to exit the interactive input mode:");
+                }
                 writer.println(lines(reader).filter(Objects::nonNull).map(String::strip).flatMapToLong(method).sum());
             }
         }

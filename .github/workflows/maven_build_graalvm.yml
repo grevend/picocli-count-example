@@ -73,25 +73,25 @@ jobs:
 
       - name: Build Native Image
         run: |  
-          native-image -jar target/picocli-count-example-1.2.1-jar-with-dependencies.jar count-1.2.1-linux
-          cp target/picocli-count-example-1.2.1-jar-with-dependencies.jar count-1.2.1-all.jar
+          native-image -jar target/picocli-count-example-1.2.2-jar-with-dependencies.jar count-1.2.2-linux
+          cp target/picocli-count-example-1.2.2-jar-with-dependencies.jar count-1.2.2-all.jar
 
       - name: Create Debian Package
         run: |
           mkdir -p count/DEBIAN/
-          echo -en "Package: count\nVersion: 1.2.1\nArchitecture: all\nSection: utils\nMaintainer: David Greven\nDescription: Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.\n" >> count/DEBIAN/control
+          echo -en "Package: count\nVersion: 1.2.2\nArchitecture: all\nSection: utils\nMaintainer: David Greven\nDescription: Count the human-readable characters, lines, or words from stdin or a file and write the number to stdout or a file.\n" >> count/DEBIAN/control
           mkdir -p count/usr/bin/
-          cp count-1.2.1-linux count/usr/bin/count
+          cp count-1.2.2-linux count/usr/bin/count
           dpkg-deb --build count
-          mv count.deb count-1.2.1.deb
+          mv count.deb count-1.2.2.deb
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            count-1.2.1-all.jar
-            count-1.2.1-linux
-            count-1.2.1.deb
+            count-1.2.2-all.jar
+            count-1.2.2-linux
+            count-1.2.2.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
