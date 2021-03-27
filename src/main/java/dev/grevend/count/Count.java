@@ -69,14 +69,14 @@ public class Count implements Callable<Integer> {
     /**
      * Returns or constructs an input stream based on the selected command options.
      *
-     * @return the input stream or null if the input file is a directory
+     * @return the input stream or null if the input file does not exist
      *
      * @throws FileNotFoundException if the input file is not found
      * @since sprint 1
      */
     protected BufferedReader in() throws FileNotFoundException {
         if(inputFile != null && !inputFile.isFile()) {
-            err().println("Input file is a directory!");
+            err().println("Input file does not exist!");
             return null;
         }
         return new BufferedReader(new InputStreamReader(inputFile != null ? new FileInputStream(inputFile) : System.in));
