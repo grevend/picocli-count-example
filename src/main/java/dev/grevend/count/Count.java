@@ -31,7 +31,7 @@ public class Count implements Callable<Integer> {
     @Option(names = {"-o", "--out"}, description = "Output file (default: print to console)", arity = "0..1")
     private File outputFile;
 
-    @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)", arity = "0..1",
+    @Option(names = {"-m", "--method"}, description = "Counting method (default: chars)\n\tOptions: chars, words, lines", arity = "0..1",
         defaultValue = "chars", showDefaultValue = CommandLine.Help.Visibility.NEVER)
     private CountingMethods method;
 
