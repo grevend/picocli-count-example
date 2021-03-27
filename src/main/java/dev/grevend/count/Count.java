@@ -60,6 +60,9 @@ public class Count implements Callable<Integer> {
             if(writer == null) {
                 return 0;
             } else {
+                if(outputFile == null) {
+                    writer.println("Enter a blank line to exit the interactive input mode:");
+                }
                 writer.println(lines(reader).filter(Objects::nonNull).map(String::strip).flatMapToLong(method).sum());
             }
         }

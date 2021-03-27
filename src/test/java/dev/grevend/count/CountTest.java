@@ -52,7 +52,7 @@ public class CountTest {
         assertThat(commandLine.execute()).isZero();
         var res = commandLine.out().toString().strip();
         assertThat(res).endsWith(count);
-        assertThat(chars.apply(requireNonNullElse(input, "")).sum() + "").endsWith(res);
+        assertThat(res).endsWith(chars.apply(requireNonNullElse(input, "")).sum() + "");
     }
 
     @ParameterizedTest
@@ -97,7 +97,7 @@ public class CountTest {
         assertThat(commandLine.execute()).isZero();
         var res = commandLine.out().toString().strip();
         assertThat(res).endsWith(count);
-        assertThat(Stream.of(input).flatMapToLong(lines).sum() + "").endsWith(res);
+        assertThat(res).endsWith(Stream.of(input).flatMapToLong(lines).sum() + "");
     }
 
     @Test
@@ -134,7 +134,7 @@ public class CountTest {
         assertThat(commandLine.execute()).isZero();
         var res = commandLine.out().toString().strip();
         assertThat(res).endsWith(count);
-        assertThat(words.apply(requireNonNullElse(input, "")).sum() + "").endsWith(res);
+        assertThat(res).endsWith(words.apply(requireNonNullElse(input, "")).sum() + "");
     }
 
     @ParameterizedTest
