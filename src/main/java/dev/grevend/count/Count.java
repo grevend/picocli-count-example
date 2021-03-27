@@ -10,7 +10,7 @@ import java.io.*;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
-import static dev.grevend.count.Utils.lines;
+import static dev.grevend.count.Utils.*;
 import static picocli.CommandLine.Command;
 
 /**
@@ -57,7 +57,11 @@ public class Count implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         try (var reader = in(); var writer = out()) {
-            writer.println(lines(reader).filter(Objects::nonNull).map(String::strip).flatMapToLong(method).sum());
+            if(writer == null) {
+                return 0;
+            } else {
+                writer.println(lines(reader).filter(Objects::nonNull).map(String::strip).flatMapToLong(method).sum());
+            }
         }
         return 0;
     }
@@ -72,7 +76,7 @@ public class Count implements Callable<Integer> {
      */
     protected BufferedReader in() throws FileNotFoundException {
         if(inputFile != null && !inputFile.isFile()) {
-            spec.commandLine().getErr().println("Input file is a directory!");
+            err().println("Input file is a directory!");
             return null;
         }
         return new BufferedReader(new InputStreamReader(inputFile != null ? new FileInputStream(inputFile) : System.in));
@@ -81,17 +85,27 @@ public class Count implements Callable<Integer> {
     /**
      * Returns or constructs an output stream based on the selected command options.
      *
-     * @return the output stream
+     * @return the output stream or null if file is in read-only state
      *
      * @throws java.io.IOException if the output file creation fails
      * @since sprint 1
      */
     private PrintWriter out() throws IOException {
-        if(outputFile != null && !outputFile.exists() && !outputFile.isDirectory()) {
-            //noinspection ResultOfMethodCallIgnored
-            outputFile.createNewFile();
+        if(outputFile != null) {
+            return writable(outputFile, err()) ? new PrintWriter(outputFile) : null;
         }
-        return outputFile == null ? spec.commandLine().getOut() : new PrintWriter(outputFile);
+        return spec.commandLine().getOut();
+    }
+
+    /**
+     * Returns the current error command line stream.
+     *
+     * @return the error stream
+     *
+     * @since sprint 2
+     */
+    private PrintWriter err() {
+        return spec.commandLine().getErr();
     }
 
 }
